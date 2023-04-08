@@ -3215,8 +3215,8 @@ tr.group {
 }
 @font-face {
 	font-family:'cool';
-	src:url('https://cdn.jsdelivr.net/gh/ZysLovePi/psyun@v1.0.0/theme/cool/assets/fonts/cool-icons.eot?k8g547');
-	src:url('https://cdn.jsdelivr.net/gh/ZysLovePi/psyun@v1.0.0/theme/cool/assets/fonts/cool-icons.eot?k8g547#iefix') format('embedded-opentype'),url('https://cdn.jsdelivr.net/gh/ZysLovePi/psyun@v1.0.0/theme/cool/assets/fonts/cool-icons.ttf?k8g547') format('truetype'),url('https://cdn.jsdelivr.net/gh/ZysLovePi/psyun@v1.0.0/theme/cool/assets/fonts/cool-icons.woff?k8g547') format('woff'),url('https://cdn.jsdelivr.net/gh/ZysLovePi/psyun@v1.0.0/theme/cool/assets/fonts/cool-icons.svg?k8g547#cool-icons') format('svg');
+	src:url('https://cdn.jsdelivr.net/gh/ZysLovePi/psyun@v1.0.1/theme/cool/assets/fonts/cool-icons.eot?k8g547');
+	src:url('https://cdn.jsdelivr.net/gh/ZysLovePi/psyun@v1.0.1/theme/cool/assets/fonts/cool-icons.eot?k8g547#iefix') format('embedded-opentype'),url('https://cdn.jsdelivr.net/gh/ZysLovePi/psyun@v1.0.1/theme/cool/assets/fonts/cool-icons.ttf?k8g547') format('truetype'),url('https://cdn.jsdelivr.net/gh/ZysLovePi/psyun@v1.0.1/theme/cool/assets/fonts/cool-icons.woff?k8g547') format('woff'),url('https://cdn.jsdelivr.net/gh/ZysLovePi/psyun@v1.0.1/theme/cool/assets/fonts/cool-icons.svg?k8g547#cool-icons') format('svg');
 	font-weight:normal;
 	font-style:normal;
 }
