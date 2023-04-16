@@ -1633,7 +1633,7 @@ $("#coupon_input").click(function () {
 
 $("#coupon_pi_input").click(function () {
     $("#coupon_pi_modal").modal('hide');
-    
+
     if($("input[name='pinode']:checked").val() == null){
         Swal.fire({
            type: "error",
@@ -1642,7 +1642,7 @@ $("#coupon_pi_input").click(function () {
         });
         return;
     }
-    
+
     $.ajax({
         type: "POST",
         url: "pi/coupon_check",
@@ -1737,7 +1737,7 @@ $("#order_pi_input").click(function () {
     } else {
         var disableothers = 0;
     }
-    
+
     $.ajax({
         type: "POST",
         url: "pi/buy",
@@ -1844,13 +1844,13 @@ function payasyougo() {
             });
         }
     });
-};
+}
 
 
 function urlChange(id, is_mu, rule_id) {
-    var site = './node/' + id + '?ismu=' + is_mu + '&relay_rule=' + rule_id;
-    if (id == 'guide') {
-        var doc = document.getElementById('infoifram').contentWindow.document;
+    const site = './node/' + id + '?ismu=' + is_mu + '&relay_rule=' + rule_id;
+    if (id === 'guide') {
+        const doc = document.getElementById('infoifram').contentWindow.document;
         doc.open();
         doc.write('<img src="../images/node.gif" style="width: 100%;height: 100%; border: none;"/>');
         doc.close();
@@ -1860,9 +1860,123 @@ function urlChange(id, is_mu, rule_id) {
     $("#nodeinfo").modal();
 }
 
+function delaySetConfirm(nodeId) {
+    const site = './node/set/' + nodeId;
+    $.ajax({
+        type: "POST",
+        url: site,
+        dataType: "json",
+        data: {
+            push_rate:$('#push_rate').val(),
+            sensitive_rate:$('#sensitive_rate').val()
+        },
+        success: function (data) {
+            if (data.ret) {
+                swal.fire({
+                    type: 'success',
+                    title: data.msg,
+                    showCloseButton: false,
+                });
+            } else {
+                swal.fire({
+                    type: 'error',
+                    title: data.msg,
+                    showCloseButton: true,
+                    text: data.msg
+                });
+            }
+        },
+        error: function (exp) {
+            swal.fire({
+                type: 'error',
+                title: '出现错误',
+                showCloseButton: true
+            });
+        }
+    });
+}
+
+function chkServerConfirm(nodeId) {
+    const site = './node/chk/' + nodeId;
+    $("#state-show").html('').removeClass('d-flex');
+    $("#state-show-ledger").html('').removeClass('d-flex');
+    $("#visually-hidden-state").addClass('d-flex');
+    $.ajax({
+        type: "GET",
+        url: site,
+        dataType: "json",
+        success: function (data) {
+            if (data.ret) {
+                const ports = data.node_port;
+                const node_ledger = data.node_ledger;
+                let arr = [31400,31401,31402,31403,31404,31405,31406,31407,31408,31409];
+                let msg = "";
+                let node_ledger_msg = "";
+
+                if(node_ledger.server_port_state === 1){
+                    msg += "<b style=\"color:green;font-size: 1rem;\">"+node_ledger.server_port_msg+"</b>"
+                    $.each(arr,function(index,value){
+                        $("#" + value).removeClass('open-wait')
+                            .removeClass('open-fail').html("打开").addClass('open-ok');
+                    });
+                } else {
+                    msg += "<b style=\"color:red;font-size: 1rem;\">"+node_ledger.server_port_msg+"</b>"
+                    $.each(arr,function(index,value){
+                        const result = $.inArray(value, ports);
+                        if(result === -1){
+                            $("#" + value).removeClass('open-wait')
+                                .removeClass('open-fail').html("打开").addClass('open-ok');
+                        } else {
+                            $("#" + value).removeClass('open-wait')
+                                .removeClass('open-ok').html("关闭").addClass('open-fail');
+                        }
+                    });
+                }
+
+                if(node_ledger.local_port_state === 1){
+                    msg += "/<b style=\"color:green;font-size: 1rem;\">"+node_ledger.local_port_msg+"</b>"
+                } else {
+                    msg += "/<b style=\"color:red;font-size: 1rem;\">"+node_ledger.local_port_msg+"</b>"
+                }
+
+                switch (node_ledger.seq_state) {
+                    case 0:
+                        msg += "/<b style=\"color:#f57b60;font-size: 1rem;\">"+node_ledger.seq_diff+"</b>"
+                        break;
+                    case 1:
+                        msg += "/<b style=\"color:green;font-size: 1rem;\">"+node_ledger.seq_diff+"</b>"
+                        node_ledger_msg += "<b style=\"color:green;font-size: 1rem;\">你的区块："+node_ledger.sequence+"</b>" +
+                            "/<b style=\"color:green;font-size: 1rem;\">官方区块："+node_ledger.core_latest_ledger+"</b>"
+                        break;
+                    case 2:
+                        msg += "/<b style=\"color:#f44041;font-size: 1rem;\">"+node_ledger.seq_diff+"</b>"
+                        node_ledger_msg += "<b style=\"color:#f44041;font-size: 1rem;\">你的区块："+node_ledger.sequence+"</b>" +
+                            "/<b style=\"color:green;font-size: 1rem;\">官方区块："+node_ledger.core_latest_ledger+"</b>"
+                        break;
+                    case -1:
+                        msg += "/<b style=\"color:red;font-size: 1rem;\">"+node_ledger.seq_diff+"</b>"
+                        break;
+                }
+                $("#visually-hidden-state").removeClass('d-flex');
+                $("#state-show").html("["+msg+"]").addClass('d-flex');
+                if(node_ledger_msg != ""){
+                    $("#state-show-ledger").html("["+node_ledger_msg+"]").addClass('d-flex');
+                }
+            } else {
+                $("#visually-hidden-state").removeClass('d-flex');
+                $("#state-show").html('<b style="color:#ac4142;font-size: 1rem;">查询异常</b>').addClass('d-flex');
+            }
+        },
+        error: function (exp) {
+            $("#visually-hidden-state").removeClass('d-flex');
+            $("#state-show").html('<b style="color:red;font-size: 1rem;">检测异常</b>').addClass('d-flex');
+        }
+    });
+
+}
+
 $(function () {
-    $.fn.modal.Constructor.prototype._enforceFocus = function () {
-    };
+    $.fn.modal.Constructor.prototype._enforceFocus = function () {};
     new ClipboardJS('.copy-modal');
 });
 $(".copy-modal").click(function () {
