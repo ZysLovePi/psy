@@ -1867,8 +1867,9 @@ function delaySetConfirm(nodeId) {
         url: site,
         dataType: "json",
         data: {
-            push_rate:$('#push_rate').val(),
-            sensitive_rate:$('#sensitive_rate').val()
+            push_rate: $('#push_rate').val(),
+            sensitive_rate: $('#sensitive_rate').val(),
+            local_fail_rate: $('#local_fail_rate').val()
         },
         success: function (data) {
             if (data.ret) {
